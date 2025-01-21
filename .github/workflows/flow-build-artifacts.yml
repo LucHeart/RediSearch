@@ -55,16 +55,6 @@ jobs:
         run: |
           TAG=$(curl -sL --retry 5 https://api.github.com/repos/redis/redis/releases/latest | jq -er '.tag_name') && \
           echo "tag=$TAG" >> $GITHUB_OUTPUT
-      - name: Validate Reference
-        shell: python
-        run: |
-          from re import fullmatch
-          ref = '${{ github.ref_name }}'
-          if bool(fullmatch('[0-9]+\.[0-9]+', ref)) or ref == 'master': # e.g. 2.8, 2.10, master
-            if '${{ inputs.architecture }}' != 'all' or '${{ inputs.platform }}' != 'all':
-              print("::error title=Invalid Request::"
-                    "You can only build all configurations for master or a release branch")
-              exit(1)
 
   decide-linux:
     if: ${{ inputs.platform != 'macos' }}
